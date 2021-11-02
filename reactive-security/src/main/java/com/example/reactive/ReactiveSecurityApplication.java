@@ -26,10 +26,11 @@ public class ReactiveSecurityApplication {
 				.anyExchange().authenticated()
 				.and()
 				.httpBasic()
-				.authenticationEntryPoint((exchange, ex) -> {
-					exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-					return Mono.empty();
-				})
+// Does not work, was worth a try as a workaround
+//				.authenticationEntryPoint((exchange, ex) -> {
+//					exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+//					return Mono.empty();
+//				})
 				.authenticationManager(authentication -> {
 					final Object principal = authentication.getPrincipal();
 					if (isValidUser(authentication)) {

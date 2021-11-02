@@ -1,0 +1,85 @@
+= Spring Security BasicAuth comparison
+ifndef::env-github[:icons: font]
+ifdef::env-github[]
+:badges:
+:tag: main
+:!toc-title:
+:tip-caption: :bulb:
+:note-caption: :paperclip:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+
+== Known issues
+
+=== Similar configuration in MVC & Reactive stacks return 401 and 403 respectively
+
+To reproduce:
+
+. Start the servers
+
+ $ ./gradlew :mvc-security:bootRun :reactive-security:bootRun
++
+NOTE: MVC example runs on 8080, Reactive on 9090.
+
+. Validate successful authentication
+
+ $ curl -u "user:pass" "http://localhost:8080/hello" -v
++
+.expected response
+----
+< HTTP/1.1 200
+< Set-Cookie: JSESSIONID=E1F2EE2EF0FF4A287F63C0BEEEFDDA0B; Path=/; HttpOnly
+< X-Content-Type-Options: nosniff
+< X-XSS-Protection: 1; mode=block
+< Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+< Pragma: no-cache
+< Expires: 0
+< X-Frame-Options: DENY
+< Content-Type: application/json
+< Transfer-Encoding: chunked
+< Date: Tue, 02 Nov 2021 16:51:07 GMT
+<
+* Connection #0 to host localhost left intact
+{"text":"Hello!","timestamp":"2021-11-02T17:51:07.658499"}* Closing connection 0
+----
+
+ $ curl -u "user:pass" "http://localhost:8080/hello" -v
+ $ curl -u "user:pass" "http://localhost:9090/hello" -v
++
+.expected response
+----
+< HTTP/1.1 200
+< Set-Cookie: JSESSIONID=E1F2EE2EF0FF4A287F63C0BEEEFDDA0B; Path=/; HttpOnly
+< X-Content-Type-Options: nosniff
+< X-XSS-Protection: 1; mode=block
+< Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+< Pragma: no-cache
+< Expires: 0
+< X-Frame-Options: DENY
+< Content-Type: application/json
+< Transfer-Encoding: chunked
+< Date: Tue, 02 Nov 2021 16:51:07 GMT
+<
+* Connection #0 to host localhost left intact
+{"text":"Hello!","timestamp":"2021-11-02T17:51:07.658499"}* Closing connection 0
+----
+
+. Use invalid credentials for MVC
+
+ $ curl -u "user:pass2" "http://localhost:8080/hello" -v
++
+.expected response
+----
+< HTTP/1.1 401
+----
+
+. Use invalid credentials for Reactive
+
+ $ curl -u "user:pass2" "http://localhost:9090/hello" -v
++
+.expected response
+----
+< HTTP/1.1 403
+----

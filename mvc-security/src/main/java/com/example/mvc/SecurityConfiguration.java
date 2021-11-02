@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.mvc;
 
 import java.util.ArrayList;
 

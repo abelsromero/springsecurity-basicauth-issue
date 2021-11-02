@@ -15,6 +15,11 @@ endif::[]
 
 === Similar configuration in MVC & Reactive stacks return 401 and 403 respectively
 
+Respective implementations can be found in classes:
+
+* link:mvc-security/src/main/java/com/example/mvc/SecurityConfiguration.java[mvc -> SecurityConfiguration]
+* link:reactive-security/src/main/java/com/example/reactive/ReactiveSecurityApplication.java[mvc -> ReactiveSecurityApplication]
+
 To reproduce:
 
 . Start the servers
